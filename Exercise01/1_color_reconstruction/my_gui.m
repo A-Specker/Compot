@@ -1,6 +1,6 @@
 %% my_gui
 function my_gui(R,G,B)
-fig = figure('Name', 'test', 'KeyPressFcn', @myKeyPress, ...
+fig = figure('Name', 'Reconstructed Image', 'KeyPressFcn', @myKeyPress, ...
     'WindowButtonDownFcn', @myWindowButtonDown);
 
 [height width] = size(R);
@@ -33,11 +33,6 @@ xinc = 0;
 yinc = 0;
 axes(ax(1));
 set(get(ax(1),'Title'),'Color','r','FontWeight','bold');
-
-%% fuer die Uebung
-    function [img] = reconstruct(R, G, B)
-        img = cat(3, R,G,B);        
-    end
 
 
 %% myKeyPress
