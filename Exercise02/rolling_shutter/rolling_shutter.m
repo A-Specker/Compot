@@ -16,6 +16,8 @@ img = zeros(size(frames{1}),'uint8');
 for frm_n = 1:360
 % TODO: Sample each row of the highspeed video frames and combine them into
 % the rolling shutter image
+    % for each row of the rolling shutter image, use a new frame
+    img(frm_n,:,:) = frames{frm_n}(frm_n,:,:);
 end
 
 %% Display and write result
