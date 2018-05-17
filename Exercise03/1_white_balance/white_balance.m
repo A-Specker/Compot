@@ -46,13 +46,24 @@ cam = zeros(3,24);
 
 % determine the color for each patch (elements of cam matrix), for each 
 % patch calculate the mean value of the patch pixels
+upper_left_y = coords(1,1);
+bottom_right_y = coords(2,1);
+upper_left_x = coords(1,2);
+bottom_right_x = coords(2,2);
 
+%iterate through the four rows
+for row = 1:4
+    for column = 1:6
+        for c=1:3            
+            cam(c,(row-1)*6+column) = mean2(A((upper_left_x:bottom_right_x)+(row-1)*delta, (upper_left_y:bottom_right_y)+(column-1)*delta,c));
+        end
+    end
+end
 
 % calculate the matrix Mat using the least squares method and matrices b,cam
-
-
+% probably wrong
+Mat = inv(transpose(cam)*cam)*transpose(cam)*b;  
 % apply the calculated matrix Mat to the image A
-
 
 % write out the end image
 %imwrite(uint8(A*255), 'checker_corrected.tiff', 'tiff');
