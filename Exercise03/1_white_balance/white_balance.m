@@ -65,6 +65,14 @@ Mat = transpose(cam)\transpose(b);
 % apply the calculated matrix Mat to the image A
 % wrong
 %A = Mat*transpose(A);
+for i=1:618
+    for j=1:869
+        rgb = A(i,j,:);
+        rgb = reshape(rgb,1,3);
+        A(i,j,:) = transpose(Mat)*transpose(rgb);
+    end
+end
+
 % write out the end image
 imwrite(uint8(A*255), 'checker_corrected.tiff', 'tiff');
 
