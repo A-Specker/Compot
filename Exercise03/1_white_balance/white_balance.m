@@ -61,12 +61,12 @@ for row = 1:4
 end
 
 % calculate the matrix Mat using the least squares method and matrices b,cam
-% probably wrong
-Mat = inv(transpose(cam)*cam)*transpose(cam)*b;  
+Mat = transpose(cam)\transpose(b);
 % apply the calculated matrix Mat to the image A
-
+% wrong
+%A = Mat*transpose(A);
 % write out the end image
-%imwrite(uint8(A*255), 'checker_corrected.tiff', 'tiff');
+imwrite(uint8(A*255), 'checker_corrected.tiff', 'tiff');
 
 % compare the results with reference image
 ref = double(imread('checker_corrected_ref.tiff'))/255;
