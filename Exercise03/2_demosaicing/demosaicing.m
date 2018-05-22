@@ -9,9 +9,10 @@ bayer_psnr = psnr(bayer,img);
 
 % TODO: nearest neighbor method and bilinear method
 simple = nearest(bayer);
+simple_psnr = psnr(simple,img);
 
 linear = bilinear(bayer);
-
+linear_psnr = psnr(linear,img);
 
 %% viz bilinear
 figure('Name','Final');

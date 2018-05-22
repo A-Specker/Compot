@@ -62,9 +62,8 @@ end
 
 % calculate the matrix Mat using the least squares method and matrices b,cam
 Mat = transpose(cam)\transpose(b);
+
 % apply the calculated matrix Mat to the image A
-% wrong
-%A = Mat*transpose(A);
 for i=1:618
     for j=1:869
         rgb = A(i,j,:);
