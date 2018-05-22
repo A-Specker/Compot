@@ -14,6 +14,15 @@ simple_psnr = psnr(simple,img);
 linear = bilinear(bayer);
 linear_psnr = psnr(linear,img);
 
+%% Answer for the question on sheet 3
+% As you can see for both algorithms the color reconstruction is not really
+% good when you take a look at a region where some objects only take a few
+% pixels, because this way, we cannot reconstruct the original color ,
+% because the neighbour pixels are already an other object.
+% You can see this in this image when you zoom in on the fence or the
+% exterior wall of the small house on the left, because the color of the
+% images changes quickyl horizontally (fence) or vertically (house)
+
 %% viz bilinear
 figure('Name','Final');
 
