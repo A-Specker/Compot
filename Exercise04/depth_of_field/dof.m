@@ -29,17 +29,17 @@ pixSize = sensorSize/imgDim(1);
 % compute distance from the lens plane to the sensor plane
 %lens equation: 1/o + 1/i = 1/f, we know g=focusDist and f:
 %1/i=1/f-1/o ->i = 1/(1/f-1/g)
-i = 1/(1/f-1/focusDist);
+I = 1/(1/f-1/focusDist);
 
 % precompute the blur kernel radii blurR for all pixels
 % compute all distances from the lans plane to the sensor plane taking the
 % depth image into account and all corresponding angles
-i_s = zeros(size(depthImg));
+I_s = zeros(size(depthImg));
 blurR = zeros(size(depthImg));
 for m=1:size(depthImg,1)
     for n=1:size(depthImg, 2)
-        i_s(m,n) = 1/(1/f-1/depthImg(m,n));
-        blurR(m,n) = (apR/i_s(m,n))*abs(i-i_s(m,n));
+        I_s(m,n) = 1/(1/f-1/depthImg(m,n));
+        blurR(m,n) = (apR/I_s(m,n))*abs(I-I_s(m,n));
     end
 end
 
@@ -55,12 +55,12 @@ maxBlur = max(blurPixR_int(:));
 
 % pad the original image with the border pixels; the border should be
 % allow for blurring with the largest kernel size
-img = padarray(img, [floor(maxBlur/2)+1, floor(maxBlur/2)+1], 'replicate', 'both');
+img = padarray(img, [maxBlur, maxBlur], 'replicate', 'both');
 % we create the space for the depth-blurred image and the accumulation
 % buffer
 blurImg = zeros(size(img));
 accumBuff = zeros(size(img,1),size(img,2));
-
+maxma = 0;
 for j=maxBlur+1:imgDim(1)+maxBlur
     for i=maxBlur+1:imgDim(2)+maxBlur
         % if kernel size is 0 (that means it is smaller than the pixel size) then there is no
@@ -79,16 +79,23 @@ for j=maxBlur+1:imgDim(1)+maxBlur
             
             % get the current blur kernel
             kernel = blur_kernel(blurPixR(j-maxBlur,i-maxBlur), currBlurPixR);
-            a = floor(size(kernel,1)/2);
-            b = floor(size(kernel,2)/2);
             % perform the splatting in image space
-            for m=-a:-1
-                for n=-b:-1
-                    blurImg(j,i,:) = blurImg(j,i,:)+ img(j+m,i+n,:)*kernel(m+a+1,n+b+1);
+            
+            
+            for m = j-currBlurPixR: j+currBlurPixR
+                for n = i-currBlurPixR: i+currBlurPixR
+                    for c = 1:3
+                        maxma = max(maxma);
+                        blurImg(m,n,c) = blurImg(m,n,c) + kernel(m -j+currBlurPixR + 1, n -i+currBlurPixR + 1) * img(j, i, c);
+                    end
+                    accumBuff(m,n) = accumBuff(m,n) + kernel(m -j+currBlurPixR + 1, n -i+currBlurPixR + 1);
                 end
             end
+          
+            
             % update the accumulation buffer
-            accumBuff(j,i) = 1;
+            %accumBuff(j-currBlurPixR: j+currBlurPixR, i-currBlurPixR: i+currBlurPixR) = accumBuff(j-currBlurPixR: j+currBlurPixR, i-currBlurPixR: i+currBlurPixR) + kernel;
+            
         end
     end
 end
@@ -99,5 +106,6 @@ blurImg(:,:,2) = blurImg(:,:,2)./(accumBuff);
 blurImg(:,:,3) = blurImg(:,:,3)./(accumBuff);
 
 % write the image as jpg
+imshow(blurImg(maxBlur+1:imgDim(1)+maxBlur,maxBlur+1:imgDim(2)+maxBlur,:))
 imwrite(blurImg(maxBlur+1:imgDim(1)+maxBlur,maxBlur+1:imgDim(2)+maxBlur,:),'sponza_blurred.jpg','jpg');
 
