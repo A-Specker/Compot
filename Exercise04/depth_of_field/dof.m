@@ -1,3 +1,9 @@
+%answer for g):
+%our image differs from the correctly ray traced image mainly on the pixels
+%that are closer the the sensor, which is on the right side of the image
+%where the pillars are. This could be due to the large differences of depth
+%of the neighbouring pixels.
+
 close all;
 clear all;
 clc;
@@ -38,7 +44,7 @@ I_s = zeros(size(depthImg));
 blurR = zeros(size(depthImg));
 for m=1:size(depthImg,1)
     for n=1:size(depthImg, 2)
-        I_s(m,n) = 1/(1/f-1/depthImg(m,n));
+        I_s(m,n) = abs(1/(1/f-1/depthImg(m,n)));
         blurR(m,n) = (apR/I_s(m,n))*abs(I-I_s(m,n));
     end
 end
@@ -79,23 +85,18 @@ for j=maxBlur+1:imgDim(1)+maxBlur
             
             % get the current blur kernel
             kernel = blur_kernel(blurPixR(j-maxBlur,i-maxBlur), currBlurPixR);
-            % perform the splatting in image space
-            
-            
+            % perform the splatting in image spac
             for m = j-currBlurPixR: j+currBlurPixR
                 for n = i-currBlurPixR: i+currBlurPixR
                     for c = 1:3
                         maxma = max(maxma);
                         blurImg(m,n,c) = blurImg(m,n,c) + kernel(m -j+currBlurPixR + 1, n -i+currBlurPixR + 1) * img(j, i, c);
                     end
+                    
+                    % update the accumulation buffer
                     accumBuff(m,n) = accumBuff(m,n) + kernel(m -j+currBlurPixR + 1, n -i+currBlurPixR + 1);
                 end
-            end
-          
-            
-            % update the accumulation buffer
-            %accumBuff(j-currBlurPixR: j+currBlurPixR, i-currBlurPixR: i+currBlurPixR) = accumBuff(j-currBlurPixR: j+currBlurPixR, i-currBlurPixR: i+currBlurPixR) + kernel;
-            
+            end            
         end
     end
 end
