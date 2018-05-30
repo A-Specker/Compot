@@ -66,7 +66,7 @@ img = padarray(img, [maxBlur, maxBlur], 'replicate', 'both');
 % buffer
 blurImg = zeros(size(img));
 accumBuff = zeros(size(img,1),size(img,2));
-maxma = 0;
+
 for j=maxBlur+1:imgDim(1)+maxBlur
     for i=maxBlur+1:imgDim(2)+maxBlur
         % if kernel size is 0 (that means it is smaller than the pixel size) then there is no
@@ -89,7 +89,6 @@ for j=maxBlur+1:imgDim(1)+maxBlur
             for m = j-currBlurPixR: j+currBlurPixR
                 for n = i-currBlurPixR: i+currBlurPixR
                     for c = 1:3
-                        maxma = max(maxma);
                         blurImg(m,n,c) = blurImg(m,n,c) + kernel(m -j+currBlurPixR + 1, n -i+currBlurPixR + 1) * img(j, i, c);
                     end
                     
