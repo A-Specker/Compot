@@ -1,8 +1,9 @@
 %answer for g):
 %our image differs from the correctly ray traced image mainly on the pixels
-%that are closer the the sensor, which is on the right side of the image
+%that are closer to the sensor, which is on the right side of the image
 %where the pillars are. This could be due to the large differences of depth
-%of the neighbouring pixels.
+%of the neighbouring pixels. You can also see this in the most different
+%neighbouring colors in the Depth Map.
 
 close all;
 clear all;
