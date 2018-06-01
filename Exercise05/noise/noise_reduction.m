@@ -46,7 +46,7 @@ a2 = a2 ./ nrDarkframes;
 a3 = a3 ./ nrDarkframes;
 
 average = cat(3,a1,a2,a3);
-average = average + dark;
+average = average - dark;
 
 imgSize = size(average);
 blurImg = zeros(size(average));
