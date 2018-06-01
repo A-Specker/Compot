@@ -1,5 +1,6 @@
 % Noise reduction
-
+% Averaging improves the image quality, because the noise falls with 
+% sqrt(# averaged images) and it reduces random noise sources
 clear all;
 close all;
 clc;
