@@ -1,6 +1,12 @@
 % Noise reduction
 % Averaging improves the image quality, because the noise falls with 
 % sqrt(# averaged images) and it reduces random noise sources
+%
+% Fixed Pattern Noise:
+% To calculate the fixed pattern noise, we take n pictures with the lens
+% covered. To see the errors of the sensor, the pixels that vary from the
+% average pixel are calculated and these ones have to be averaged to get
+% the fixed pattern noise. 
 clear all;
 close all;
 clc;
