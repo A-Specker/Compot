@@ -3,10 +3,10 @@
 % sqrt(# averaged images) and it reduces random noise sources
 %
 % Fixed Pattern Noise:
-% To calculate the fixed pattern noise, we take n pictures with the lens
-% covered. To see the errors of the sensor, the pixels that vary from the
-% average pixel are calculated and these ones have to be averaged to get
-% the fixed pattern noise. 
+% To calculate the fixed pattern noise, we take n pictures of an uniform 
+% incoming illumination. The fixed pattern noise is the averaged pixels
+% that vary from the mean pixel value of each picture substracted by the 
+% actual image.  
 clear all;
 close all;
 clc;
