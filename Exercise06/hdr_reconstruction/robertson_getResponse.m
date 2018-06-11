@@ -61,7 +61,7 @@ function [ normed, mid ] = normalize( I )
     %go through the values from 1 to the end
     for i=1:size(I,2)
         %check if you have a response
-        if I(i) ~= 0
+        if I(i) ~= 0.0
             %assign lower bound of range
             min_index = i;
             break
@@ -73,7 +73,7 @@ function [ normed, mid ] = normalize( I )
     %go throught the values from the end to 1
     for i=size(I,2):-1:1
         %check if you have a response
-        if I(i) ~= 0
+        if I(i) ~= 0.0
             %assign upper bound of range
             max_index = i;
             break
@@ -86,7 +86,16 @@ function [ normed, mid ] = normalize( I )
     
     %divide the response function by the mid_value so the value at the
     %middle of the range is 1.0 (only if value ~= 0)
-    if mid ~=0
+    %otherwise search if there is a nearby value ~= 0.0
+    if mid == 0.0
+        while I(mid_index) == 0 && mid_index < 256
+            mid_index = mid_index + 1;
+        end
+        
+        mid = I(mid_index);
+    end
+    
+    if mid ~=0.0
        normed = I./mid; 
     end
 end

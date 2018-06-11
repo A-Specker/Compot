@@ -61,7 +61,7 @@ figure(4);
 imshow(scaled,[]);
 title('HDR with linear response Curve');
 
-
+return
 %% Robertson with response curve
 
 imgopt = zeros(h, w, d);
