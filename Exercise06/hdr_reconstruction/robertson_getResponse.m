@@ -55,7 +55,38 @@ end
 
 
 function [ normed, mid ] = normalize( I )
-    max = max(I);
-    normed = I./max;
-    mid = mean(I);
+    %get min and max indices of response function where value ~= 0 so you
+    %get the lower bound of range
+    min_index = 0;
+    %go through the values from 1 to the end
+    for i=1:size(I,2)
+        %check if you have a response
+        if I(i) ~= 0
+            %assign lower bound of range
+            min_index = i;
+            break
+        end
+    end
+    
+    %get the upper bound of range
+    max_index = 0;
+    %go throught the values from the end to 1
+    for i=size(I,2):-1:1
+        %check if you have a response
+        if I(i) ~= 0
+            %assign upper bound of range
+            max_index = i;
+            break
+        end
+    end
+    
+    %calculate the middle of the range and get the corresponding value
+    mid_index = min_index + round((min_index - max_index) / 2); 
+    mid = I(mid_index);
+    
+    %divide the response function by the mid_value so the value at the
+    %middle of the range is 1.0 (only if value ~= 0)
+    if mid ~=0
+       normed = I./mid; 
+    end
 end
