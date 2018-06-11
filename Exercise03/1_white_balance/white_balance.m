@@ -64,13 +64,10 @@ end
 Mat = transpose(cam)\transpose(b);
 
 % apply the calculated matrix Mat to the image A
-for i=1:618
-    for j=1:869
-        rgb = A(i,j,:);
-        rgb = reshape(rgb,1,3);
-        A(i,j,:) = transpose(Mat)*transpose(rgb);
-    end
-end
+dim = size(A);
+A_reshape = reshape(A, dim(1)*dim(2), 3);
+A_reshape = A_reshape*Mat;
+A = reshape(A_reshape, dim(1),dim(2),3);
 
 % write out the end image
 imwrite(uint8(A*255), 'checker_corrected.tiff', 'tiff');
