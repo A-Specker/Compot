@@ -27,7 +27,26 @@ while(delta > maxdelta)
     %   two nonzero values)!
     %   (hint: to avoid extra for loops you could use the "conditional indices"
     %   as mentioned in the assignment.
-
+   
+    E_m = cell(length(images),1);
+    %loop through 0:255
+    for m=0:255
+        sum = 0;
+        for i=1:length(images)
+            %current image
+            cur_img = images{i};
+            E_m{i} = find(cur_img(:,:,channel) == m);
+        end
+        card = 0;
+        for i=1:length(images)
+            %find first value ~= 0
+            for j=1:length(E_m{i})
+                sum = sum + times(i)*I(1+images{i}(j));
+                card = card + 1;
+            end
+        end
+        I(m+1) = (1/card)*sum;
+    end
     % step 2: normalize I
     [I, mid] = normalize(I);
 
@@ -38,9 +57,9 @@ while(delta > maxdelta)
     
     % step 4: check stopping condition delta - use the squared difference
     % between two consecutive response curve estimates.
-    
+    delta = (I-Ip).^2
     fprintf('    %d: delta = %g\n', it_count, delta);
-
+    
     if(it_count == maxit)
         delta = 0;
     end
@@ -59,7 +78,7 @@ function [ normed, mid ] = normalize( I )
     %get the lower bound of range
     min_index = 0;
     %go through the values from 1 to the end
-    for i=1:size(I,2)
+    for i=1:length(I)
         %check if you have a response
         if I(i) ~= 0.0
             %assign lower bound of range
@@ -71,7 +90,7 @@ function [ normed, mid ] = normalize( I )
     %get the upper bound of range
     max_index = 0;
     %go throught the values from the end to 1
-    for i=size(I,2):-1:1
+    for i=length(I):-1:1
         %check if you have a response
         if I(i) ~= 0.0
             %assign upper bound of range
@@ -81,8 +100,9 @@ function [ normed, mid ] = normalize( I )
     end
     
     %calculate the middle of the range and get the corresponding value
-    mid_index = min_index + round((min_index - max_index) / 2); 
-    mid = I(mid_index);
+    mid_index = min_index + round((max_index - min_index) / 2); 
+    mid_index
+    mid = I(mid_index+1);
     
     %divide the response function by the mid_value so the value at the
     %middle of the range is 1.0 (only if value ~= 0)
