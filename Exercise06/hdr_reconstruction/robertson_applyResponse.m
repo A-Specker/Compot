@@ -11,6 +11,7 @@ for m=1:size(images{1},1)
         for i=1:N
             %the known observation
             y_ij = images{i}(m,n,channel);
+            
             x_ij = I(y_ij+1)/times(i);
             counter = counter + weight(y_ij)*x_ij;
             denominator = denominator + weight(y_ij);

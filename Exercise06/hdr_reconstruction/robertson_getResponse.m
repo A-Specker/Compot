@@ -1,4 +1,4 @@
-function [ hdrimg, curve ] = robertson_getResponse( images, times, I, channel)
+function [ hdrimg, curve] = robertson_getResponse( images, times, I, channel)
 
 maxit = 100;
 maxdelta = 0.0005;
@@ -27,25 +27,44 @@ while(delta > maxdelta)
     %   two nonzero values)!
     %   (hint: to avoid extra for loops you could use the "conditional indices"
     %   as mentioned in the assignment.
-   
+    % initialize E_m
     E_m = cell(length(images),1);
     %loop through 0:255
     for m=0:255
-        sum = 0;
+        sum_score = 0;
+        % loop through the exposure times
         for i=1:length(images)
-            %current image
-            cur_img = images{i};
-            E_m{i} = find(cur_img(:,:,channel) == m);
+            %get the index set E_m = {(i,j):y_ij = m}
+            E_m{i} = find(images{i}(:,:,channel) == m);
         end
+        %variable for Card(E_m{i})
         card = 0;
-        for i=1:length(images)
-            %find first value ~= 0
+        %variables needed for calculation of x_j
+        x_j_counter = 0;
+        x_j_denominator = 0;
+        %loop through the exposure times
+        for i=1:length(E_m)         
+            %loop through the length of each E_m at the given exposure time
             for j=1:length(E_m{i})
-                sum = sum + times(i)*I(1+images{i}(j));
-                card = card + 1;
-            end
+                %exposure time
+                t_i = times(i);
+                % sum up x_j_counter and x_j_denominator (equation 8 in the
+                % paper)
+                x_j_counter = x_j_counter + weight(images{i}(channel*j))*t_i*I(1+images{i}(channel*j));
+                x_j_denominator = x_j_denominator + weight(images{i}(channel*j))*t_i^2;
+                
+            end          
+            %sum up the cardinality
+            card = card + length(E_m{i});
         end
-        I(m+1) = (1/card)*sum;
+        %calculate x_j and afterwards I_m (equation 10 in the paper)
+        x_j = x_j_counter / x_j_denominator;
+        sum_score = sum_score + t_i*x_j;
+        mon_inc = 0;
+        if (m >= 1)
+            mon_inc = I(m);
+        end
+        I(m+1) = mon_inc + (1/card)*sum_score;
     end
     % step 2: normalize I
     [I, mid] = normalize(I);
@@ -57,7 +76,8 @@ while(delta > maxdelta)
     
     % step 4: check stopping condition delta - use the squared difference
     % between two consecutive response curve estimates.
-    delta = (I-Ip).^2
+    delta = sum((I-Ip).^2);
+
     fprintf('    %d: delta = %g\n', it_count, delta);
     
     if(it_count == maxit)
@@ -101,7 +121,6 @@ function [ normed, mid ] = normalize( I )
     
     %calculate the middle of the range and get the corresponding value
     mid_index = min_index + round((max_index - min_index) / 2); 
-    mid_index
     mid = I(mid_index+1);
     
     %divide the response function by the mid_value so the value at the
