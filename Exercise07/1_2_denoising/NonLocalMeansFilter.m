@@ -17,7 +17,7 @@ result = zeros(dim);
 % 4.2.b)
 % Padd the input image to enable similarity comparison patches at the borders
 % (miror the image at the borders!)
-input_pad = input; %TODO
+input_pad = padarray(input, [similarity_r+1, similarity_r+1], 'replicate', 'both');
 
 % create a waitbar to show progress
 h = waitbar(0,'Applying NL Means filter...');
@@ -25,13 +25,14 @@ set(h,'Name','NL Means Filter Progress');
 
 
 for y = 1 : dim(1)
-    for x = 1 : dim(2)  
+    for x = 1 : dim(2) 
         
         % 4.2.c)
         % Extract a window around the pixel at position (y,x).
         % This window is then used to calculate the similarity to all other
         % pixels in the search radius of this pixel
-        sim_window_pixel = zeros(2*similarity_r+1, 2*similarity_r+1, 3); % TODO
+        sim_window_pixel = imcrop(input_pad, [x-similarity_r y-similarity_r x+similarity_r y+similarity_r]);
+        
         
         
         pixel_average = zeros([1,1,3]);
@@ -49,12 +50,32 @@ for y = 1 : dim(1)
         %   and the weight to the total pixel weight (pixel_weight).
         % * Keep track of the maximum weight that was found. And use it to 
         %   weight the pixel (y,x) in the end (after the iteration).
+       for i=max(1+search_r, y-search_r):min(dim(1)-search_r,y+search_r)
+           
+           for j=max(1+search_r,x-search_r):min(dim(2)-search_r,x+search_r)
+               
+              
+                   
+                    sim_window_pixel2 = imcrop(input_pad, [i-search_r j-search_r i+search_r j+search_r]);
+                    pixel_weight = SimilarityWeight(sim_window_pixel, sim_window_pixel2, sigma);
+                    
+                    pixel_average = pixel_average + pixel_weight;
+                    if pixel_weight>max_weight
+                        max_weight = pixel_weight;
+                    end
+               
+           end
+       end
        
-        
+       pixel_average = pixel_average/ max_weight;
 
-        
         % 4.2.e) 
         % Write the result into the output image
+        if (pixel_average == 0)
+           result(y,x,:) = input(y,x,:) ;
+        else
+            result(y,x,:) = pixel_average / 255;
+        end
     end    
     waitbar(y/dim(1));
 end

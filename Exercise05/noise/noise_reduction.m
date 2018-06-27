@@ -6,7 +6,9 @@
 % To calculate the fixed pattern noise, we take n pictures of an uniform 
 % incoming illumination. The fixed pattern noise is the averaged pixels
 % that vary from the mean pixel value of each picture substracted by the 
-% actual image.  
+% actual image.
+% (Shine uniform light on the sensor and can calculate non-uniformity of
+% sensor. -> Flat fielding)
 clear all;
 close all;
 clc;

@@ -19,30 +19,30 @@ noisy = double(imread('images/noisy_tablet.tiff'))/255;
 
 error_noisy_matlab = immse(ground_truth, noisy) % matlab version of MSE
 % 4.1.a) Implement your own Mean Square Error function and call it here.
-error_noisy_self = 0 % call your function here
+error_noisy_self = MSE(noisy, ground_truth)% call your function here
 
 psnr_noisy_matlab = psnr(noisy, ground_truth) % matlab version of PSNR
 %4.1.b) Implement your own PSNR function and call it here.
-psnr_noisy_self = 0 % call your function here
+psnr_noisy_self = PSNR(noisy, ground_truth); % call your function here
 
 %4.1.c) Use a simple gauss filter on the noisy image
 sigma_s = 1; % parameter for determining the weights in spacial filter
-denoised_gauss = zeros(size(noisy));  % apply gauss filter to noisy image
-psnr_gauss = 0 % determine the psnr
+denoised_gauss = imgaussfilt(noisy,sigma_s);  % apply gauss filter to noisy image
+psnr_gauss = PSNR(denoised_gauss, ground_truth); % determine the psnr
 
 % 4.1.d) Implement your own Bilateral Filter
 sigma_s = 2; % parameter for determining the weights in spacial filter
 sigma_r = 0.1; % parameter for weighting in color space
-denoised_bilateral = zeros(size(noisy)); % use your bilateral filter on noisy image
-psnr_bilateral = 0 % determine the psnr
+denoised_bilateral = BilateralFilter(noisy,sigma_s,sigma_r); % use your bilateral filter on noisy image
+psnr_bilateral = PSNR(denoised_bilateral, ground_truth); % determine the psnr
 
 
 %% 2. Implement your own Non Local Means Filter
 search_window_r = 5;      % parameter for search window radius
 similarity_window_r = 3;  % parameter for similarity patch size (radius)
 sigma = 0.075;            % parameter std deviation used for similarity determination
-denoised_NLM = zeros(size(noisy)); % call your NLM-Filter here
-psnr_NLM = 0 % determine the psnr
+denoised_NLM = NonLocalMeansFilter(noisy,search_window_r, similarity_window_r, sigma); % call your NLM-Filter here
+psnr_NLM = PSNR(denoised_NLM, ground_truth); % determine the psnr
 
 
 %% Create a Plot
