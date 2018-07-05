@@ -31,10 +31,10 @@ for y = 1 : dim(1)
         % Extract a window around the pixel at position (y,x).
         % This window is then used to calculate the similarity to all other
         % pixels in the search radius of this pixel
-        sim_window_pixel = imcrop(input_pad, [x-similarity_r y-similarity_r x+similarity_r y+similarity_r]);
+        sim_window_pixel = imcrop(input_pad, [y-similarity_r x-similarity_r 2*similarity_r 2*similarity_r]);
         
-        
-        
+       
+
         pixel_average = zeros([1,1,3]);
         pixel_weight = 0;
         max_weight = 0;  
@@ -56,7 +56,7 @@ for y = 1 : dim(1)
                
               
                    
-                    sim_window_pixel2 = imcrop(input_pad, [i-search_r j-search_r i+search_r j+search_r]);
+                    sim_window_pixel2 = imcrop(input_pad, [i-search_r j-search_r 2*search_r 2*search_r]);
                     pixel_weight = SimilarityWeight(sim_window_pixel, sim_window_pixel2, sigma);
                     
                     pixel_average = pixel_average + pixel_weight;
@@ -68,13 +68,15 @@ for y = 1 : dim(1)
        end
        
        pixel_average = pixel_average/ max_weight;
-
+        
         % 4.2.e) 
         % Write the result into the output image
         if (pixel_average == 0)
-           result(y,x,:) = input(y,x,:) ;
+           result(y,x) = input(y,x) ;
         else
-            result(y,x,:) = pixel_average / 255;
+            result(y,x,1) = pixel_average(:,:,1)*input(y,x,1)/255;
+            result(y,x,2) = pixel_average(:,:,2)*input(y,x,2)/255;
+            result(y,x,3) = pixel_average(:,:,3)*input(y,x,3)/255;
         end
     end    
     waitbar(y/dim(1));

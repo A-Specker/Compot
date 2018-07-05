@@ -6,7 +6,7 @@ ground_truth = double(imread('images/tablet.tiff'))/255;
 noisy = double(imread('images/noisy_tablet.tiff'))/255;
 
 %%%%%%%%%% EXERCISE 2 DEBUGGING Images %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%ground_truth = double(imread('images/tablet_small.tiff'))/255;
+%ground_truth = double(imread('images/tablet_smal l.tiff'))/255;
 %noisy = imnoise(ground_truth,'gaussian', 0, 0.0005);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
